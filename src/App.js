@@ -1,24 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css"
+import Summary from "./components/summary/index";
+import History from "./components/history";
+import Form from "./components/form";
+import Modal from "./components/modal";
 
 function App() {
+  const [total, setTotal] = useState(0);
+  const [history, setHistory] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+
+
+  function handleFormSubmit({ value, type }) {
+    if (type === 'income') {
+      setTotal(total + Number(value))
+    } else {
+      setTotal(total - Number(value))
+    }
+    const historyItem = { value, type };
+    const newHistory = [...history, historyItem]
+    setHistory(newHistory);
+  }
+  function handleOpen() {
+    setIsOpen(true)
+  }
+  function isClose() {
+    setIsOpen(false)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Modal isOpen={isOpen} onClose={isClose} >
+
+        <Form onSubmit={handleFormSubmit} />
+
+      </Modal >
+
+      <Summary total={total} />
+
+      <History history={history} />
+
+      <button onClick={handleOpen} className="plus">
+        +
+      </button>
+    </>
   );
 }
 
